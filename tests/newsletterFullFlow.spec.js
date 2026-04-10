@@ -1,30 +1,20 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('./fixtures');
 
-const LoginPage = require('../pages/loginPage');
-const NewsletterSubscribersPage = require('../pages/newsletterSubscribersPage');
 const NewsletterListPage = require('../pages/newsletterListPage');
 const NewsletterDetailsPage = require('../pages/newsletterDetailsPage');
+const NewsletterSubscribersPage = require('../pages/newsletterSubscribersPage');
 
-test('Newsletter Full Flow - End to End', async ({ page }) => {
+test('Newsletter Full Flow - End to End (With Fixtures)', async ({ newsletterPage }) => {
 
-  const login = new LoginPage(page);
+  const page = newsletterPage;
+
   const nav = new NewsletterSubscribersPage(page);
   const list = new NewsletterListPage(page);
   const details = new NewsletterDetailsPage(page);
 
-  
-  await login.goto();
-  await login.login('admin@yourstore.com', 'admin');
+  //Already logged in + navigated via fixture
 
-  //Assert
-  await expect(page).toHaveURL(/admin/i);
-
- 
-  await nav.navigateToSubscribers();
-  await expect(nav.pageTitle).toBeVisible();
-  await expect(nav.pageTitle).toHaveText(/Newsletter subscribers/i);
-
-  // NEGATIVE CASE: Empty Email
+  // NEGATIVE
   await list.clickAddNew();
   await details.clickSave();
 
@@ -36,6 +26,7 @@ test('Newsletter Full Flow - End to End', async ({ page }) => {
   
   await nav.navigateToSubscribers();
 
+  
   await list.clickAddNew();
 
   const email = `test${Date.now()}@mail.com`;
@@ -44,11 +35,11 @@ test('Newsletter Full Flow - End to End', async ({ page }) => {
   await details.setActiveRadio(true);
   await details.clickSave();
 
- 
+  
   await expect(details.successMessage).toBeVisible();
   await expect(details.successMessage).toContainText(/success/i);
 
-
+  
   await nav.navigateToSubscribers();
   await list.search(email);
 
@@ -67,17 +58,18 @@ test('Newsletter Full Flow - End to End', async ({ page }) => {
   await expect(details.successMessage).toBeVisible();
   await expect(details.successMessage).toContainText(/updated|success/i);
 
+  
   await nav.navigateToSubscribers();
   await list.search(email);
   await list.clickEdit();
 
   await details.deleteSubscriber();
 
-
+  
   await expect(details.successMessage).toBeVisible();
   await expect(details.successMessage).toContainText(/deleted|success/i);
 
-  
+ 
   await nav.navigateToSubscribers();
 
   const path = require('path');
@@ -85,11 +77,10 @@ test('Newsletter Full Flow - End to End', async ({ page }) => {
 
   await list.importCSV(filePath);
 
- 
+  
   await expect(list.successMessage).toBeVisible();
   await expect(list.successMessage).toContainText(/imported|success/i);
 
   
   await list.exportCSV();
-
 });
