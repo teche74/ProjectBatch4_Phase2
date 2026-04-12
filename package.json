@@ -1,0 +1,21 @@
+{
+  "name": "porject_batch_4_playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "api": "playwright test tests/api"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.2"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}

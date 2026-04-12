@@ -1,0 +1,66 @@
+# -----------------------------
+# Node modules (MUST ignore)
+# -----------------------------
+node_modules/
+
+# -----------------------------
+# Playwright outputs
+# -----------------------------
+playwright-report/
+test-results/
+blob-report/
+html-report/
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -----------------------------
+# Environment variables
+# -----------------------------
+.env
+.env.*
+
+# -----------------------------
+# OS files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# IDE / Editor files
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+
+# -----------------------------
+# Playwright traces / videos / screenshots
+# -----------------------------
+test-results/
+*.zip
+*.png
+*.webm
+*.trace
+
+# -----------------------------
+# Temporary files
+# -----------------------------
+tmp/
+temp/
+
+# -----------------------------
+# Optional: Ignore local test data (if sensitive)
+# -----------------------------
+# test-data/
+
+# -----------------------------
+# Keep important configs
+# -----------------------------
+!package.json
+!package-lock.json
+!playwright.config.js
