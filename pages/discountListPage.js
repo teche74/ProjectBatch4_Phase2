@@ -1,22 +1,45 @@
 const BasePage = require('./basePage');
 
 class DiscountListPage extends BasePage {
-    constructor(page) {
-        super(page);
-        this.addNewBtn = page.locator('a.btn-primary:has-text("Add new")');
-        this.searchNameInput = page.locator('#SearchDiscountName');
-        this.searchBtn = page.locator('#search-discounts');
-        this.editBtn = page.locator('a.btn-default:has-text("Edit")');
-    }
+  constructor(page) {
+    super(page);
 
-    async clickAddNew() {
-        await this.addNewBtn.click();
-    }
+    this.searchNameField = page.locator('#SearchDiscountName');
+    this.searchBtn = page.locator('#search-discounts');
 
-    async searchDiscount(name) {
-        await this.searchNameInput.fill(name);
-        await this.searchBtn.click();
-        await this.page.waitForLoadState('networkidle');
-    }
+    this.addNewBtn = page.locator('a.btn-primary');
+
+    this.grid = page.locator('#discounts-grid');
+
+    this.successMessage = page.locator('.alert-success');
+  }
+
+  async search(name) {
+    await this.fill(this.searchNameField, name);
+    await this.click(this.searchBtn);
+
+    await this.grid.waitFor({ state: 'visible' });
+  }
+
+  async clickAddNew() {
+    await this.addNewBtn.waitFor({ state: 'visible', timeout: 10000 });
+    await this.click(this.addNewBtn);
+  }
+
+  async clickEdit() {
+    const editBtn = this.page.locator('#discounts-grid tbody tr td a:has-text("Edit")').first();
+
+    await editBtn.waitFor({ state: 'visible', timeout: 10000 });
+    await editBtn.click();
+  }
+
+  async isGridVisible() {
+    return await this.grid.isVisible();
+  }
+
+  async isSuccessMessageDisplayed() {
+    return await this.successMessage.isVisible();
+  }
 }
+
 module.exports = DiscountListPage;
