@@ -1,6 +1,5 @@
 const { test, expect } = require('../fixtures/baseTest');
 
-const LoginPage = require('../pages/loginPage');
 const NewsletterSubscribersPage = require('../pages/newsletterSubscribersPage');
 const NewsletterListPage = require('../pages/newsletterListPage');
 const NewsletterDetailsPage = require('../pages/newsletterDetailsPage');
@@ -12,7 +11,7 @@ test('Newsletter Full Flow - End to End', async ({ page , loginPage}) => {
   const details = new NewsletterDetailsPage(page);
 
   await loginPage.login('admin@yourstore.com', 'admin');
-  await page.pause();
+  // await page.pause();
 
   await nav.navigateToSubscribers();
   expect(nav.isPageLoaded()).toBeTruthy();

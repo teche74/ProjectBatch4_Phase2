@@ -1,19 +1,16 @@
 const { test, expect } = require('../fixtures/baseTest');
 
-const LoginPage = require('../pages/loginPage');
 const DiscountPage = require('../pages/discountPage');
 const DiscountListPage = require('../pages/discountListPage');
 const DiscountDetailsPage = require('../pages/discountDetailsPage');
 
-test('Discount Full Flow - End to End', async ({ page }) => {
+test('Discount Full Flow - End to End', async ({ page , loginPage }) => {
 
-  const login = new LoginPage(page);
   const nav = new DiscountPage(page);
   const list = new DiscountListPage(page);
   const details = new DiscountDetailsPage(page);
 
-  await page.goto('https://admin-demo.nopcommerce.com/login');
-  await login.login('admin@yourstore.com', 'admin');
+  await loginPage.login('admin@yourstore.com', 'admin');
 
   await nav.navigateToDiscounts();
   expect(await nav.isPageLoaded()).toBeTruthy();
