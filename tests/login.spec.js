@@ -1,12 +1,16 @@
-const { test, expect } = require('./baseTest');
-const LoginPage = require('../pages/loginPage');
+const { test, expect } = require('../fixtures/baseTest');
 
-test('Login Test - Verify Dashboard', async ({ page }) => {
+test.describe('Login Functionality', () => {
 
-  const login = new LoginPage(page);
+  test('Login with valid Credentials', async ({ page, loginPage }) => {
+    await loginPage.login('admin@yourstore.com', 'admin');
+    await expect(page).toHaveURL(/Admin/);
+    await expect(loginPage.dashboardHeader).toHaveText('Dashboard');
+  });
 
-  await page.goto('https://admin-demo.nopcommerce.com/Admin');
-  await login.login('admin@yourstore.com', 'admin');
+  test('Login with Invalid Credentials', async ({ page, loginPage }) => {
+    await loginPage.login('admin@yourstore.com', 'wrong');
+    await expect(loginPage.errorMessage).toBeVisible();
+  });
 
-  await expect(page).toHaveURL(/dashboard/);
 });

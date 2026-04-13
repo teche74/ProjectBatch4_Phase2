@@ -7,11 +7,8 @@ class LoginPage extends BasePage {
     this.email = page.locator('#Email');
     this.password = page.locator('#Password');
     this.loginBtn = page.locator('button[type="submit"]');
-  }
-
-  
-  async goto() {
-    await this.page.goto('https://admin-demo.nopcommerce.com/Admin');
+    this.errorMessage = page.locator('.message-error.validation-summary-errors');
+    this.dashboardHeader = page.getByRole('heading', { name: 'Dashboard' });
   }
 
   async login(email, password) {

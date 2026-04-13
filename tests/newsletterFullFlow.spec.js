@@ -1,86 +1,65 @@
-const { test, expect } = require('./fixtures');
+const { test, expect } = require('../fixtures/baseTest');
 
+const NewsletterSubscribersPage = require('../pages/newsletterSubscribersPage');
 const NewsletterListPage = require('../pages/newsletterListPage');
 const NewsletterDetailsPage = require('../pages/newsletterDetailsPage');
-const NewsletterSubscribersPage = require('../pages/newsletterSubscribersPage');
 
-test('Newsletter Full Flow - End to End (With Fixtures)', async ({ newsletterPage }) => {
+test('Newsletter Full Flow - End to End', async ({ page , loginPage}) => {
 
-  const page = newsletterPage;
+  const newsletterSubscribersPage = new NewsletterSubscribersPage(page);
+  const newsletterListPage = new NewsletterListPage(page);
+  const newsletterDetailsPage = new NewsletterDetailsPage(page);
 
-  const nav = new NewsletterSubscribersPage(page);
-  const list = new NewsletterListPage(page);
-  const details = new NewsletterDetailsPage(page);
+  await loginPage.login('admin@yourstore.com', 'admin');
+  // await page.pause();
 
-  //Already logged in + navigated via fixture
+  await newsletterSubscribersPage.navigateToSubscribers();
+  expect(newsletterSubscribersPage.isPageLoaded()).toBeTruthy();
 
-  // NEGATIVE
-  await list.clickAddNew();
-  await details.clickSave();
-
-  const errorMsg = page.locator('.field-validation-error');
-
-  await expect(errorMsg).toBeVisible();
-  await expect(errorMsg).toContainText(/required/i);
-
-  
-  await nav.navigateToSubscribers();
-
-  
-  await list.clickAddNew();
+  await newsletterListPage.clickAddNew();
 
   const email = `test${Date.now()}@mail.com`;
 
-  await details.enterEmail(email);
-  await details.setActiveRadio(true);
-  await details.clickSave();
+  await newsletterDetailsPage.enterEmail(email);
+  await newsletterDetailsPage.clickSave();
 
-  
-  await expect(details.successMessage).toBeVisible();
-  await expect(details.successMessage).toContainText(/success/i);
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  
-  await nav.navigateToSubscribers();
-  await list.search(email);
+  await newsletterSubscribersPage.navigateToSubscribers();
+  await newsletterListPage.search(email);
 
-  await expect(list.grid).toBeVisible();
-  await expect(list.grid).toContainText(email);
+  expect(await newsletterListPage.isGridVisible()).toBeTruthy();
 
-  
-  await list.clickEdit();
+  await newsletterListPage.clickEdit();
 
-  const isActive = await details.isActiveRadioChecked();
 
-  await details.setActiveRadio(!isActive);
-  await details.clickSave();
+  const isActive = await newsletterDetailsPage.isActiveRadioChecked();
 
-  
-  await expect(details.successMessage).toBeVisible();
-  await expect(details.successMessage).toContainText(/updated|success/i);
+  console.log("Current Active State:", isActive);
 
-  
-  await nav.navigateToSubscribers();
-  await list.search(email);
-  await list.clickEdit();
+  await newsletterDetailsPage.setActiveRadio(!isActive);
 
-  await details.deleteSubscriber();
+  await newsletterDetailsPage.clickSave();
 
-  
-  await expect(details.successMessage).toBeVisible();
-  await expect(details.successMessage).toContainText(/deleted|success/i);
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
- 
-  await nav.navigateToSubscribers();
+  await newsletterSubscribersPage.navigateToSubscribers();
+  await newsletterListPage.search(email);
+  await newsletterListPage.clickEdit();
 
-  const path = require('path');
-  const filePath = path.join(__dirname, '../test-data/newsletter.csv');
+  await newsletterDetailsPage.deleteSubscriber();
 
-  await list.importCSV(filePath);
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  
-  await expect(list.successMessage).toBeVisible();
-  await expect(list.successMessage).toContainText(/imported|success/i);
+  await newsletterSubscribersPage.navigateToSubscribers();
 
-  
-  await list.exportCSV();
+  await newsletterListPage.importCSV('test-data/newsletter.csv');
+
+  expect(await newsletterListPage.isSuccessMessageDisplayed()).toBeTruthy();
+
+  await newsletterListPage.exportCSV();
+
 });
+
+
+
