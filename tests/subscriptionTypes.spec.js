@@ -46,7 +46,7 @@ test.describe('Subscription Types Tests', () => {
     console.log("Before :: " +countBeforeDeletingSubscription)
 
     const countAfterDeletingSubscription = await subscriptionPage.getRowCount();
-    console.log("Before :: " +countAfterDeletingSubscription)
+    console.log("After :: " +countAfterDeletingSubscription)
 
 
     expect(countAfterDeletingSubscription).toBeLessThan(countBeforeDeletingSubscription);

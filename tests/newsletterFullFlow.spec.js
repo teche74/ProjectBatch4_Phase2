@@ -6,58 +6,58 @@ const NewsletterDetailsPage = require('../pages/newsletterDetailsPage');
 
 test('Newsletter Full Flow - End to End', async ({ page , loginPage}) => {
 
-  const nav = new NewsletterSubscribersPage(page);
-  const list = new NewsletterListPage(page);
-  const details = new NewsletterDetailsPage(page);
+  const newsletterSubscribersPage = new NewsletterSubscribersPage(page);
+  const newsletterListPage = new NewsletterListPage(page);
+  const newsletterDetailsPage = new NewsletterDetailsPage(page);
 
   await loginPage.login('admin@yourstore.com', 'admin');
   // await page.pause();
 
-  await nav.navigateToSubscribers();
-  expect(nav.isPageLoaded()).toBeTruthy();
+  await newsletterSubscribersPage.navigateToSubscribers();
+  expect(newsletterSubscribersPage.isPageLoaded()).toBeTruthy();
 
-  await list.clickAddNew();
+  await newsletterListPage.clickAddNew();
 
   const email = `test${Date.now()}@mail.com`;
 
-  await details.enterEmail(email);
-  await details.clickSave();
+  await newsletterDetailsPage.enterEmail(email);
+  await newsletterDetailsPage.clickSave();
 
-  expect(await details.isSuccessMessageDisplayed()).toBeTruthy();
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  await nav.navigateToSubscribers();
-  await list.search(email);
+  await newsletterSubscribersPage.navigateToSubscribers();
+  await newsletterListPage.search(email);
 
-  expect(await list.isGridVisible()).toBeTruthy();
+  expect(await newsletterListPage.isGridVisible()).toBeTruthy();
 
-  await list.clickEdit();
+  await newsletterListPage.clickEdit();
 
 
-  const isActive = await details.isActiveRadioChecked();
+  const isActive = await newsletterDetailsPage.isActiveRadioChecked();
 
   console.log("Current Active State:", isActive);
 
-  await details.setActiveRadio(!isActive);
+  await newsletterDetailsPage.setActiveRadio(!isActive);
 
-  await details.clickSave();
+  await newsletterDetailsPage.clickSave();
 
-  expect(await details.isSuccessMessageDisplayed()).toBeTruthy();
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  await nav.navigateToSubscribers();
-  await list.search(email);
-  await list.clickEdit();
+  await newsletterSubscribersPage.navigateToSubscribers();
+  await newsletterListPage.search(email);
+  await newsletterListPage.clickEdit();
 
-  await details.deleteSubscriber();
+  await newsletterDetailsPage.deleteSubscriber();
 
-  expect(await details.isSuccessMessageDisplayed()).toBeTruthy();
+  expect(await newsletterDetailsPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  await nav.navigateToSubscribers();
+  await newsletterSubscribersPage.navigateToSubscribers();
 
-  await list.importCSV('test-data/newsletter.csv');
+  await newsletterListPage.importCSV('test-data/newsletter.csv');
 
-  expect(await list.isSuccessMessageDisplayed()).toBeTruthy();
+  expect(await newsletterListPage.isSuccessMessageDisplayed()).toBeTruthy();
 
-  await list.exportCSV();
+  await newsletterListPage.exportCSV();
 
 });
 
